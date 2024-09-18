@@ -6,18 +6,38 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
-import kb, states, db
+import kb, states, db, keyboards_bank.admin_kb
+
+import util_functions
+import chanel_bot
+import config
 
 router = Router()
 session = None
 
 @router.message(Command("start"))
 async def start_handler(msg: Message):
-    await msg.answer(text="Это бот, который будет пинать вас для того чтобы вы выполняли свой долг в ООС.\n"
+    print(msg.from_user.id)
+    print(msg.chat.id)
+    if(msg.chat.id == config.CHAT_ID):
+        pass
+    else:
+        await msg.answer(text="Это бот, который будет пинать вас для того чтобы вы выполняли свой долг в ООС.\n"
                      "Вы сможете выбрать день недели и промежуток времени в котором собираетесь опубликовать пост\n"
                      "В случае если вы не опубликуете пост, бот будет напоминать вам об этом каждый час\n"
                      "Для продолжения выберите соответсвующую команду на клавиатуре",
                      reply_markup=kb.main)
+
+
+@router.message(F.text.lower() == "/admin")
+async def admin(message: Message):
+    if message.from_user.id == int(config.ADMIN_ID):
+        await message.reply(
+            text="Меню капитана. Ваши приказания",
+            reply_markup=await keyboards_bank.admin_kb.generate_admin_menu()
+        )
+    else:
+        await message.reply("You pick the wrong house, fool!!!")
 
 
 @router.message(Command("create_notify"))
@@ -25,6 +45,13 @@ async def week_kb(msg: Message):
     await msg.answer(
         'Выберите день недели:',
         reply_markup=await kb.generate_weekdays_menu()
+    )
+
+@router.message(Command("test"))
+async def test(msg: Message):
+    print("opopop")
+    await msg.answer(
+        text = await util_functions.generate_users_post_report(-1, chanel_bot.get_client())
     )
 
 

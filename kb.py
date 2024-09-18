@@ -13,7 +13,7 @@ days_dict = {
 
 
 main = ReplyKeyboardMarkup(keyboard=[
-    [KeyboardButton(text="/start"), KeyboardButton(text="/create_notify")]
+    [KeyboardButton(text="/start"), KeyboardButton(text="/create_notify"), KeyboardButton(text="/test")]
 ], resize_keyboard=True)
 
 async def generate_weekdays_menu():
