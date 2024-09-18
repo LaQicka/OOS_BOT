@@ -153,17 +153,14 @@ async def main():
 
     session = await db.create_async_session()
     handlers.session = session
-    # scheduler = AsyncIOScheduler()
-    # scheduler.add_job(check_for_notifications, 'interval', minutes=1)
-    # scheduler.start()
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(check_for_notifications, 'interval', minutes=1)
+    scheduler.start()
 
-    # await send_users_post_status()
     dp = Dispatcher(storage=MemoryStorage())
-    # dp.include_router(router)
     dp.include_routers(router, admin_router)
     await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
